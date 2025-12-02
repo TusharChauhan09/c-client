@@ -1,9 +1,8 @@
 import { IconMoon, IconSun } from "@tabler/icons-react"
-
-import { useTheme } from "@/components/theme-provider"
+import useStore from "@/store/useStore"
 
 export function ModeToggle() {
-  const { theme, setTheme } = useTheme()
+  const { theme, setTheme } = useStore()
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark")
