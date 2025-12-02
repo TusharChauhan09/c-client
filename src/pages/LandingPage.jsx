@@ -1,5 +1,6 @@
 import { SignedIn, SignedOut } from "@clerk/clerk-react";
 import HeroCarousel from "@/components/HeroCarousel";
+import BentoGrid from "@/components/BentoGrid";
 
 export default function LandingPage() {
     const heroSlides = [
@@ -23,6 +24,9 @@ export default function LandingPage() {
             <div className="w-full px-2">
                 <HeroCarousel slides={heroSlides} autoPlayInterval={30000} />
             </div>
+
+            {/* Bento Grid Section */}
+            <BentoGrid />
 
             {/* Additional Content Section */}
             <SignedIn>
