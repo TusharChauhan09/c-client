@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import useStore from '@/store/useStore';
+import useUIStore from '@/store/useUIStore';
 
 /**
  * Hook to get the current active theme color
@@ -11,7 +11,7 @@ import useStore from '@/store/useStore';
  */
 export function useThemeColor(cssVar, fallback = '#000000') {
   const [color, setColor] = useState(fallback);
-  const theme = useStore((state) => state.theme);
+  const theme = useUIStore((state) => state.theme);
 
   useEffect(() => {
     const updateColor = () => {
@@ -51,7 +51,7 @@ export function useThemeColor(cssVar, fallback = '#000000') {
  */
 export function useThemeColors(colorMap) {
   const [colors, setColors] = useState({});
-  const theme = useStore((state) => state.theme);
+  const theme = useUIStore((state) => state.theme);
 
   useEffect(() => {
     const updateColors = () => {
@@ -85,8 +85,8 @@ export function useThemeColors(colorMap) {
  * @returns {boolean} True if dark mode is active
  */
 export function useIsDarkMode() {
-  const getActiveTheme = useStore((state) => state.getActiveTheme);
-  const theme = useStore((state) => state.theme);
+  const getActiveTheme = useUIStore((state) => state.getActiveTheme);
+  const theme = useUIStore((state) => state.theme);
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {

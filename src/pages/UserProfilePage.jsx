@@ -1,8 +1,8 @@
 import { UserProfile } from "@clerk/clerk-react";
-import useStore from "@/store/useStore";
+import useUIStore from "@/store/useUIStore";
 
 export default function UserProfilePage() {
-  const theme = useStore((state) => state.theme);
+  const theme = useUIStore((state) => state.theme);
   const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
 
   return (
