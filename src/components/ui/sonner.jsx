@@ -5,13 +5,13 @@ import {
   OctagonXIcon,
   TriangleAlertIcon,
 } from "lucide-react"
-import useStore from "@/store/useStore"
+import useUIStore from "@/store/useUIStore"
 import { Toaster as Sonner } from "sonner";
 
 const Toaster = ({
   ...props
 }) => {
-  const theme = useStore((state) => state.theme)
+  const theme = useUIStore((state) => state.theme)
 
   return (
     <Sonner

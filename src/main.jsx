@@ -5,7 +5,7 @@ import App from './App.jsx'
 
 import { ClerkProvider } from '@clerk/clerk-react'
 import ClickSpark from './components/ClickSpark';
-import useStore from './store/useStore';
+import useUIStore from './store/useUIStore';
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 
@@ -14,7 +14,7 @@ if (!PUBLISHABLE_KEY) {
 }
 
 function Root() {
-  const sparkSettings = useStore((state) => state.sparkSettings);
+  const sparkSettings = useUIStore((state) => state.sparkSettings);
   
   return (
     <StrictMode>

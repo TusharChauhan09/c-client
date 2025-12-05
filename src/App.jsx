@@ -11,8 +11,12 @@ import TravelAIPage from "./pages/TravelAIPage";
 import PricingPage from "./pages/PricingPage";
 import ContactPage from "./pages/ContactPage";
 import UserProfilePage from "./pages/UserProfilePage";
+import { useAuthSync } from "@/hooks/useAuthSync";
 
 function App() {
+  // Sync Clerk authentication with Zustand store
+  useAuthSync();
+
   return (
     <BrowserRouter>
       <Navbar />
@@ -36,3 +40,4 @@ function App() {
 }
 
 export default App;
+
