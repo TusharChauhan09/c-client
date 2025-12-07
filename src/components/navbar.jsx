@@ -1,16 +1,26 @@
 import { Link } from "react-router-dom";
-import { UserButton, SignedIn, SignedOut, SignInButton } from "@clerk/clerk-react";
+import { UserButton, SignedIn, SignedOut, SignInButton, useUser } from "@clerk/clerk-react";
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from "motion/react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { IconMenu2, IconX } from "@tabler/icons-react";
 import useUIStore from "@/store/useUIStore";
+import useAuthStore from "@/store/useAuthStore";
 
 export function Navbar() {
   const { scrollY } = useScroll();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
+  const { user, isSignedIn } = useUser();
+  const { dbUser, syncUser } = useAuthStore();
+
+  useEffect(() => {
+    if (isSignedIn && user) {
+      syncUser(user.id);
+    }
+  }, [isSignedIn, user, syncUser]);
   
   const theme = useUIStore((state) => state.theme);
   const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
@@ -113,7 +123,7 @@ export function Navbar() {
                       colorTextSecondary: isDark ? "#a1a1a1" : "#6b7280",
                     },
                     elements: {
-                      avatarBox: "h-9 w-9 ring-2 ring-primary/10 hover:ring-primary/30 transition-all",
+                      avatarBox: "h-8 w-8",
                       userButtonPopoverCard: isDark ? "bg-[#0a0a0a] border border-white/10 shadow-lg" : "bg-white border border-black/10 shadow-lg",
                       userButtonPopoverActionButton: isDark ? "!text-white hover:bg-white/10" : "!text-black hover:bg-black/5",
                       userButtonPopoverActionButtonText: isDark ? "!text-white" : "!text-black",

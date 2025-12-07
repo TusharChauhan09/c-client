@@ -1,32 +1,74 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import { IconCheck } from '@tabler/icons-react';
+import { IconCheck, IconSparkles, IconStar, IconCrown } from '@tabler/icons-react';
 import { Button } from '@/components/ui/button';
 import { useUser } from '@clerk/clerk-react';
 import { toast } from 'sonner';
+import useAuthStore from '@/store/useAuthStore';
+import { Spinner } from '@/components/ui/spinner';
 
 export default function PricingPage() {
   const { user, isSignedIn } = useUser();
   const [loading, setLoading] = useState(false);
+  const [billingCycle, setBillingCycle] = useState('monthly'); // monthly or annually
+  const { syncUser } = useAuthStore();
 
   const plans = [
     {
-      name: 'Free',
+      id: 'bronze',
+      name: 'Bronze',
+      subtitle: 'Free Plan',
+      icon: IconSparkles,
       price: '0',
-      features: ['Basic Trip Planning', '3 Saved Trips', 'Community Access', 'Standard Support'],
+      description: 'For beginners to explore our platform and start their travel journey.',
+      features: [
+        'Unlimited AI Travel Guide (Mini)',
+        'Basic Trip Planning',
+        'Standard Support',
+        'Access to travel resources',
+        'Limited travel insights'
+      ],
       recommended: false,
+      tierColor: 'from-[#CD7F32] to-[#8B4513]',
+      bgGlow: 'shadow-[0_0_40px_rgba(205,127,50,0.15)]'
     },
     {
-      name: 'Pro',
-      price: '499',
-      features: ['Unlimited Trip Planning', 'AI Recommendations', 'Offline Access', 'Priority Support', 'Exclusive Deals'],
+      id: 'silver',
+      name: 'Silver',
+      subtitle: 'Pro Plan',
+      icon: IconStar,
+      price: billingCycle === 'monthly' ? '499' : '4990',
+      description: 'For active travelers who want advanced AI assistance and premium features.',
+      features: [
+        '10 Credits for GPT-4o (20 mins)',
+        'Unlimited AI Travel Guide (Mini)',
+        'Advanced Trip Planning',
+        'Priority Access',
+        'Custom travel alerts',
+        'Expert travel assistance'
+      ],
       recommended: true,
+      tierColor: 'from-[#E8E8E8] to-[#C0C0C0]',
+      bgGlow: 'shadow-[0_0_50px_rgba(192,192,192,0.2)]'
     },
     {
-      name: 'Enterprise',
-      price: '1999',
-      features: ['Everything in Pro', 'Dedicated Agent', 'Custom Itineraries', 'Group Booking Tools', '24/7 Concierge'],
+      id: 'gold',
+      name: 'Gold',
+      subtitle: 'Advance Plan',  
+      icon: IconCrown,
+      price: billingCycle === 'monthly' ? '999' : '9990',
+      description: 'For institutions or high net worth individuals who need unlimited access.',
+      features: [
+        '20 Credits for GPT-4o (40 mins)',
+        'Unlimited AI Travel Guide (Mini)',
+        'Premium Support 24/7',
+        'Exclusive Travel Deals',
+        'Dedicated account manager',
+        'Team collaboration tools'
+      ],
       recommended: false,
+      tierColor: 'from-[#FFD700] to-[#FFA500]',
+      bgGlow: 'shadow-[0_0_60px_rgba(255,215,0,0.25)]'
     },
   ];
 
@@ -40,7 +82,7 @@ export default function PricingPage() {
     });
   };
 
-  const handlePayment = async (amount) => {
+  const handlePayment = async (amount, planName) => {
     if (!isSignedIn) {
       toast.error("Please sign in to subscribe");
       return;
@@ -62,8 +104,6 @@ export default function PricingPage() {
         return;
       }
 
-      // Create Order
-      console.log("Creating order with amount:", amount);
       const orderResponse = await fetch('http://localhost:3000/api/payment/create-order', {
         method: 'POST',
         headers: {
@@ -80,7 +120,6 @@ export default function PricingPage() {
       }
 
       const orderData = await orderResponse.json();
-      console.log("Order created:", orderData);
 
       if (!orderData.success) {
         toast.error('Error creating order: ' + (orderData.message || 'Unknown error'));
@@ -91,7 +130,6 @@ export default function PricingPage() {
       const keyId = import.meta.env.VITE_RAZORPAY_KEY_ID;
       if (!keyId) {
         toast.error("Configuration Error: Razorpay Key ID is missing in frontend .env");
-        console.error("Missing VITE_RAZORPAY_KEY_ID");
         setLoading(false);
         return;
       }
@@ -101,11 +139,9 @@ export default function PricingPage() {
         amount: orderData.order.amount,
         currency: orderData.order.currency,
         name: "Travel Planner",
-        description: "Premium Subscription",
-        image: "https://via.placeholder.com/150", // You can replace this with your logo URL
+        description: `${planName} Subscription`,
         order_id: orderData.order.id,
         handler: async function (response) {
-          // Verify Payment
           const verifyResponse = await fetch('http://localhost:3000/api/payment/verify-payment', {
             method: 'POST',
             headers: {
@@ -115,13 +151,16 @@ export default function PricingPage() {
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature,
+              userId: user?.id,
+              amount: Number(amount)
             }),
           });
 
           const verifyData = await verifyResponse.json();
 
           if (verifyData.success) {
-            toast.success('Payment Successful! Welcome to Premium.');
+            toast.success(`Payment Successful! Welcome to ${planName}.`);
+            if (user) syncUser(user.id);
           } else {
             toast.error('Payment Verification Failed');
           }
@@ -148,76 +187,194 @@ export default function PricingPage() {
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-4 bg-background">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
+    <div className="min-h-screen flex flex-col justify-center py-4 px-4 relative overflow-hidden">
+      {/* Background Gradient */}
+      <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background pointer-events-none" />
+      
+      <div className="relative z-10 max-w-7xl w-full mx-auto">
+        {/* Header Section */}
+        <div className="text-center mb-6">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-block mb-2"
+          >
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20">
+              <IconSparkles size={14} className="text-primary" />
+              <span className="text-xs font-medium text-primary">Pricing</span>
+            </div>
+          </motion.div>
+
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-5xl font-serif font-bold mb-4"
+            transition={{ delay: 0.1 }}
+            className="text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-br from-foreground via-foreground/90 to-foreground/70 bg-clip-text text-transparent"
           >
-            Choose Your Journey
+            Plans and Pricing
           </motion.h1>
+          
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-muted-foreground text-lg max-w-2xl mx-auto"
+            transition={{ delay: 0.2 }}
+            className="text-muted-foreground text-sm md:text-base max-w-xl mx-auto mb-4"
           >
-            Select the perfect plan to unlock your next adventure. 
-            Upgrade anytime as your travel needs grow.
+            Choose a plan that fits your investment goals.
           </motion.p>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {plans.map((plan, index) => (
-            <motion.div
-              key={plan.name}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 + 0.2 }}
-              className={`relative p-8 rounded-2xl border ${
-                plan.recommended 
-                  ? 'border-primary bg-primary/5 shadow-xl scale-105 z-10' 
-                  : 'border-border bg-card shadow-lg'
+          {/* Billing Toggle */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="inline-flex items-center gap-2 p-1 rounded-full bg-muted/50 backdrop-blur-sm border border-border"
+          >
+            <button
+              onClick={() => setBillingCycle('monthly')}
+              className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all ${
+                billingCycle === 'monthly'
+                  ? 'bg-background text-foreground shadow-md'
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
             >
-              {plan.recommended && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-medium">
-                  Recommended
-                </div>
-              )}
-
-              <div className="mb-8">
-                <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-bold">₹{plan.price}</span>
-                  <span className="text-muted-foreground">/month</span>
-                </div>
-              </div>
-
-              <ul className="space-y-4 mb-8">
-                {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-center gap-3">
-                    <div className={`p-1 rounded-full ${plan.recommended ? 'bg-primary/20' : 'bg-accent'}`}>
-                      <IconCheck size={14} className={plan.recommended ? 'text-primary' : 'text-foreground'} />
-                    </div>
-                    <span className="text-sm">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <Button 
-                onClick={() => handlePayment(plan.price)}
-                className="w-full" 
-                variant={plan.recommended ? 'default' : 'outline'}
-                disabled={loading}
-              >
-                {loading ? 'Processing...' : plan.price === '0' ? 'Get Started' : 'Subscribe Now'}
-              </Button>
-            </motion.div>
-          ))}
+              Monthly
+            </button>
+            <button
+              onClick={() => setBillingCycle('annually')}
+              className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all ${
+                billingCycle === 'annually'
+                  ? 'bg-background text-foreground shadow-md'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Annually
+              <span className="ml-1.5 text-[10px] text-green-500 font-bold">-20%</span>
+            </button>
+          </motion.div>
         </div>
+
+        {/* Pricing Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-4 items-start">
+          {plans.map((plan, index) => {
+            const IconComponent = plan.icon;
+            
+            return (
+              <motion.div
+                key={plan.id}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 + 0.4 }}
+                className="relative group h-full"
+              >
+                {/* Popular Badge */}
+                {plan.recommended && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20">
+                    <div className="bg-gradient-to-r from-primary via-primary/90 to-primary/80 text-primary-foreground px-3 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-lg whitespace-nowrap">
+                      Most Popular
+                    </div>
+                  </div>
+                )}
+
+                {/* Card */}
+                <div className={`
+                  relative h-full p-5 md:p-6 rounded-2xl flex flex-col
+                  bg-card/50 backdrop-blur-xl
+                  border-2 transition-all duration-300
+                  ${plan.recommended 
+                    ? 'border-primary/50 ' + plan.bgGlow + ' scale-[1.02] z-10' 
+                    : 'border-border hover:border-border/80 ' + plan.bgGlow
+                  }
+                `}>
+                  {/* Header Part */}
+                  <div className="flex items-start gap-4 mb-4">
+                    <div className="mb-0">
+                       <IconComponent 
+                        size={28} 
+                        className={`bg-gradient-to-br ${plan.tierColor} bg-clip-text text-transparent`}
+                        stroke={2}
+                      />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold">{plan.name}</h3>
+                      <p className="text-xs text-muted-foreground">{plan.subtitle}</p>
+                    </div>
+                  </div>
+
+                  {/* Price */}
+                  <div className="mb-4">
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-3xl md:text-4xl font-bold bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent">
+                        ₹{plan.price}
+                      </span>
+                      <span className="text-muted-foreground text-xs">
+                        /{billingCycle === 'monthly' ? 'mo' : 'yr'}
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1 line-clamp-2 min-h-[32px]">
+                      {plan.description}
+                    </p>
+                  </div>
+
+                  {/* CTA Button */}
+                  <Button
+                    onClick={() => handlePayment(plan.price, plan.name)}
+                    disabled={loading}
+                    className={`
+                      w-full mb-5 h-9 text-sm font-semibold transition-all
+                      ${plan.recommended 
+                        ? 'bg-gradient-to-r ' + plan.tierColor + ' hover:opacity-90 text-black shadow-lg'
+                        : 'bg-background hover:bg-accent border-2 border-border'
+                      }
+                    `}
+                    variant={plan.recommended ? 'default' : 'outline'}
+                    size="sm"
+                  >
+                    {loading ? <Spinner /> : plan.price === '0' ? 'Start Free' : 'Get Started'}
+                  </Button>
+
+                  {/* Features List */}
+                  <div className="space-y-2 mt-auto">
+                    {plan.features.slice(0, 5).map((feature, idx) => ( // Accessing slice to prevent card from growing too large
+                      <div key={idx} className="flex items-start gap-2">
+                        <div className={`
+                          mt-0.5 p-0.5 rounded-full shrink-0
+                          ${plan.recommended ? 'bg-primary/20' : 'bg-accent'}
+                        `}>
+                          <IconCheck 
+                            size={12} 
+                            className={plan.recommended ? 'text-primary' : 'text-muted-foreground'}
+                            stroke={3}
+                          />
+                        </div>
+                        <span className="text-xs text-foreground/80 leading-tight">
+                          {feature}
+                        </span>
+                      </div>
+                    ))}
+                    {plan.features.length > 5 && (
+                      <div className="text-[10px] text-muted-foreground pl-5 pt-1">
+                        + {plan.features.length - 5} more features
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+
+        {/* Footer Note */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8 }}
+          className="text-center"
+        >
+          <p className="text-xs text-muted-foreground">
+            No credit card required for free plan.
+          </p>
+        </motion.div>
       </div>
     </div>
   );

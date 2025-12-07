@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import axios from 'axios';
 
 /**
  * Authentication Store
@@ -9,10 +10,24 @@ const useAuthStore = create(
   persist(
     (set, get) => ({
       // ================== USER STATE ==================
-      user: null,
+      user: null, // Clerk User
+      dbUser: null, // MongoDB User (with subscription info)
       isAuthenticated: false,
       isLoading: false,
       
+      // Fetch user from MongoDB
+      syncUser: async (clerkId) => {
+        if (!clerkId) return;
+        try {
+          const response = await axios.get(`http://localhost:3000/api/auth/me?clerkId=${clerkId}`);
+          if (response.data.success) {
+             set({ dbUser: response.data.user });
+          }
+        } catch (error) {
+          console.error("Failed to sync user from DB:", error);
+        }
+      },
+
       // Set user after Clerk authentication
       setUser: (userData) => {
         set({ 
@@ -26,6 +41,7 @@ const useAuthStore = create(
       clearUser: () => {
         set({ 
           user: null, 
+          dbUser: null,
           isAuthenticated: false,
           userSubscription: null,
           onboardingCompleted: false
@@ -105,6 +121,7 @@ const useAuthStore = create(
         userSubscription: state.userSubscription,
         onboardingCompleted: state.onboardingCompleted,
         onboardingStep: state.onboardingStep,
+        dbUser: state.dbUser,
         
         // Note: user, isAuthenticated, and session data are NOT persisted
         // They will be re-fetched from Clerk on app load
