@@ -12,6 +12,7 @@ import PricingPage from "./pages/PricingPage";
 import ContactPage from "./pages/ContactPage";
 import UserProfilePage from "./pages/UserProfilePage";
 import { useAuthSync } from "@/hooks/useAuthSync";
+import { Toaster } from "@/components/ui/sonner";
 
 function App() {
   // Sync Clerk authentication with Zustand store
@@ -35,9 +36,9 @@ function App() {
         </Routes>
       </main>
       <Footer />
+      <Toaster />
     </BrowserRouter>
   );
 }
 
 export default App;
-
