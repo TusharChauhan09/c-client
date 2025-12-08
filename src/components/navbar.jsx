@@ -64,11 +64,7 @@ export function Navbar() {
       >
         <div className="flex items-center justify-between w-full max-w-7xl mx-auto">
           {/* Left Side: Logo */}
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-2"
-          >
+          <div className="flex items-center gap-2">
             <Link to="/" className="flex items-center gap-2">
               <svg fill="none" height="32" viewBox="0 0 40 48" width="28" xmlns="http://www.w3.org/2000/svg" className="text-primary">
                 <g className="fill-current">
@@ -81,7 +77,7 @@ export function Navbar() {
                 </g>
               </svg>
             </Link>
-          </motion.div>
+          </div>
 
           {/* Center: Desktop Navigation Links */}
           <nav className="hidden md:flex items-center gap-1">
@@ -99,42 +95,32 @@ export function Navbar() {
           {/* Right Side: Theme & Profile + Mobile Menu Button */}
           <div className="flex items-center gap-2">
             {/* Theme Toggle */}
-            <motion.div
-              whileHover={{ rotate: 15 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
-            >
-              <ModeToggle />
-            </motion.div>
+            <ModeToggle />
 
             {/* Auth Buttons */}
             <SignedIn>
-              <motion.div
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                <UserButton 
-                  afterSignOutUrl="/"
-                  appearance={{
-                    variables: {
-                      colorPrimary: isDark ? "#ffffff" : "#000000",
-                      colorBackground: isDark ? "#0a0a0a" : "#ffffff",
-                      colorInputBackground: isDark ? "#1a1a1a" : "#f5f5f5",
-                      colorText: isDark ? "#ffffff" : "#000000",
-                      colorTextSecondary: isDark ? "#a1a1a1" : "#6b7280",
-                    },
-                    elements: {
-                      avatarBox: "h-8 w-8",
-                      userButtonPopoverCard: isDark ? "bg-[#0a0a0a] border border-white/10 shadow-lg" : "bg-white border border-black/10 shadow-lg",
-                      userButtonPopoverActionButton: isDark ? "!text-white hover:bg-white/10" : "!text-black hover:bg-black/5",
-                      userButtonPopoverActionButtonText: isDark ? "!text-white" : "!text-black",
-                      userButtonPopoverActionButtonIcon: isDark ? "!text-white" : "!text-black",
-                      userButtonPopoverFooter: "hidden",
-                    }
-                  }}
-                  userProfileMode="navigation"
-                  userProfileUrl="/user-profile"
-                />
-              </motion.div>
+              <UserButton 
+                afterSignOutUrl="/"
+                appearance={{
+                  variables: {
+                    colorPrimary: isDark ? "#ffffff" : "#000000",
+                    colorBackground: isDark ? "#0a0a0a" : "#ffffff",
+                    colorInputBackground: isDark ? "#1a1a1a" : "#f5f5f5",
+                    colorText: isDark ? "#ffffff" : "#000000",
+                    colorTextSecondary: isDark ? "#a1a1a1" : "#6b7280",
+                  },
+                  elements: {
+                    avatarBox: "h-8 w-8",
+                    userButtonPopoverCard: isDark ? "bg-[#0a0a0a] border border-white/10 shadow-lg" : "bg-white border border-black/10 shadow-lg",
+                    userButtonPopoverActionButton: isDark ? "!text-white hover:bg-white/10" : "!text-black hover:bg-black/5",
+                    userButtonPopoverActionButtonText: isDark ? "!text-white" : "!text-black",
+                    userButtonPopoverActionButtonIcon: isDark ? "!text-white" : "!text-black",
+                    userButtonPopoverFooter: "hidden",
+                  }
+                }}
+                userProfileMode="navigation"
+                userProfileUrl="/user-profile"
+              />
             </SignedIn>
 
             <SignedOut>
