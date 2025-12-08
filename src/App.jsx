@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { SignedIn, SignedOut } from "@clerk/clerk-react";
 import SignInPage from "./pages/auth/SignInPage";
 import SignUpPage from "./pages/auth/SignUpPage";
@@ -13,13 +13,15 @@ import ContactPage from "./pages/ContactPage";
 import UserProfilePage from "./pages/UserProfilePage";
 import { useAuthSync } from "@/hooks/useAuthSync";
 import { Toaster } from "@/components/ui/sonner";
+import SmoothScroll from "@/components/SmoothScroll";
 
-function App() {
-  // Sync Clerk authentication with Zustand store
-  useAuthSync();
+function AppContent() {
+  const location = useLocation();
+  const hideFooter = location.pathname === '/travel-ai';
 
   return (
-    <BrowserRouter>
+    <>
+      <SmoothScroll />
       <Navbar />
       <main className="pt-12">
         <Routes>
@@ -35,8 +37,18 @@ function App() {
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </main>
-      <Footer />
+      {!hideFooter && <Footer />}
       <Toaster />
+    </>
+  );
+}
+
+function App() {
+  useAuthSync();
+
+  return (
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
   );
 }

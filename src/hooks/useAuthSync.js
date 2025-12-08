@@ -3,6 +3,7 @@ import { useUser, useAuth } from '@clerk/clerk-react';
 import useAuthStore from '@/store/useAuthStore';
 import useTravelStore from '@/store/useTravelStore';
 import useUIStore from '@/store/useUIStore';
+import { toast } from 'sonner';
 
 /**
  * Custom hook to sync Clerk authentication state with Zustand stores
@@ -109,6 +110,7 @@ export const useAuthSync = () => {
       endSession();
     } catch (error) {
       console.error('Error signing out:', error);
+      toast.error('Failed to sign out. Please try again.');
     }
   };
 

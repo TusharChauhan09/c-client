@@ -29,7 +29,7 @@ const HeroCarousel = ({ slides, autoPlayInterval = 5000 }) => {
   };
 
   return (
-    <div className="relative w-full h-[600px] overflow-hidden rounded-3xl bg-black">
+    <div className="relative w-full h-[600px] overflow-hidden rounded-3xl">
       {/* Background Images with AnimatePresence */}
       <AnimatePresence initial={false}>
         <motion.div
@@ -38,7 +38,7 @@ const HeroCarousel = ({ slides, autoPlayInterval = 5000 }) => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 1, ease: "easeInOut" }}
-          className="absolute inset-0"
+          className="absolute inset-0 z-10"
         >
           <img
             src={slides[currentIndex].image}
@@ -51,7 +51,7 @@ const HeroCarousel = ({ slides, autoPlayInterval = 5000 }) => {
       </AnimatePresence>
 
       {/* Static Text Content Overlay */}
-      <div className="absolute inset-0 flex items-center">
+      <div className="absolute inset-0 flex items-center z-20">
         <div className="max-w-7xl mx-auto px-8 w-full">
           <div className="max-w-2xl">
             <motion.h1
@@ -91,7 +91,7 @@ const HeroCarousel = ({ slides, autoPlayInterval = 5000 }) => {
       </div>
 
       {/* Dot Indicators */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2">
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2 z-20">
         {slides.map((_, index) => (
           <button
             key={index}
