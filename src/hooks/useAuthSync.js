@@ -81,16 +81,24 @@ export const useAuthSync = () => {
     // Note: setUser, clearUser, etc. are stable Zustand actions
   ]);
 
-  // Update activity on user interaction
+  // Update activity on user interaction (throttled to prevent excessive re-renders)
   useEffect(() => {
     if (!isSignedIn) return;
 
+    let lastUpdate = 0;
+    const THROTTLE_MS = 60000; // Only update once per minute
+
     const handleActivity = () => {
-      updateLastActivity();
+      const now = Date.now();
+      // Only update if more than THROTTLE_MS has passed since last update
+      if (now - lastUpdate > THROTTLE_MS) {
+        lastUpdate = now;
+        updateLastActivity();
+      }
     };
 
-    // Track user activity
-    const events = ['mousedown', 'keydown', 'scroll', 'touchstart'];
+    // Track user activity - only on scroll and keydown (not mousedown which interferes with popups)
+    const events = ['scroll', 'keydown'];
     events.forEach(event => {
       window.addEventListener(event, handleActivity, { passive: true });
     });

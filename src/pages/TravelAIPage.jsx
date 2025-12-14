@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useUser } from '@clerk/clerk-react';
+import { useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -18,11 +19,17 @@ const DEMO_MODE = false;
 export default function TravelAIPage() {
   const { user, isSignedIn } = useUser();
   const { dbUser } = useAuthStore();
+  const [searchParams] = useSearchParams();
+  
+  // Read from URL params if available
+  const urlDestination = searchParams.get('destination') || '';
+  const urlContext = searchParams.get('context') || '';
+  
   const [isConnected, setIsConnected] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isAISpeaking, setIsAISpeaking] = useState(false);
-  const [destination, setDestination] = useState('');
-  const [description, setDescription] = useState('');
+  const [destination, setDestination] = useState(urlDestination);
+  const [description, setDescription] = useState(urlContext);
   const [conversationLog, setConversationLog] = useState([]);
   
   const peerConnectionRef = useRef(null);
@@ -267,7 +274,7 @@ export default function TravelAIPage() {
                 </div>
 
                 {/* Main Card */}
-                <Card className="p-6 backdrop-blur-md bg-card/80 border-border/50 shadow-2xl">
+                <Card className="p-4 backdrop-blur-md bg-card/80 border-border/50 shadow-2xl">
                   <div className="space-y-5">
                     {/* Model Selection */}
                     <div className="space-y-2">

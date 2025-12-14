@@ -15,16 +15,38 @@ const useAuthStore = create(
       isAuthenticated: false,
       isLoading: false,
       
-      // Fetch user from MongoDB
-      syncUser: async (clerkId) => {
+      // Fetch user from MongoDB (creates if doesn't exist)
+      syncUser: async (clerkId, clerkUser = null) => {
         if (!clerkId) return;
         try {
+          // First try to get existing user
           const response = await axios.get(`http://localhost:3000/api/auth/me?clerkId=${clerkId}`);
           if (response.data.success) {
-             set({ dbUser: response.data.user });
+            set({ dbUser: response.data.user });
           }
         } catch (error) {
-          console.error("Failed to sync user from DB:", error);
+          // User not found - create them using the sync endpoint
+          if (error.response?.status === 404 && clerkUser) {
+            try {
+              console.log("User not found in DB, creating...");
+              const syncResponse = await axios.post('http://localhost:3000/api/auth/sync', {
+                clerkId: clerkId,
+                email: clerkUser.primaryEmailAddress?.emailAddress || clerkUser.emailAddresses?.[0]?.emailAddress,
+                firstName: clerkUser.firstName,
+                lastName: clerkUser.lastName,
+                username: clerkUser.username,
+                avatar: clerkUser.imageUrl,
+              });
+              if (syncResponse.data.success) {
+                console.log("✅ User created in DB:", syncResponse.data.user._id);
+                set({ dbUser: syncResponse.data.user });
+              }
+            } catch (syncError) {
+              console.error("Failed to create user in DB:", syncError);
+            }
+          } else {
+            console.error("Failed to sync user from DB:", error);
+          }
         }
       },
 

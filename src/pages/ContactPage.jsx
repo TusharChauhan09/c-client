@@ -68,9 +68,9 @@ export default function ContactPage() {
   };
 
   const contactDetails = [
-    { icon: IconMail, label: "Email", value: "hello@travelplanner.com" },
-    { icon: IconPhone, label: "Phone", value: "+1 (555) 123-4567" },
-    { icon: IconMapPin, label: "Address", value: "San Francisco, CA" },
+    { icon: IconMail, label: "Email", value: "suppoet@travelplanner.com" },
+    { icon: IconPhone, label: "Phone", value: "+91 8219013535" },
+    { icon: IconMapPin, label: "Address", value: "Phagwara Punjab, India" },
   ];
 
   const socialLinks = [

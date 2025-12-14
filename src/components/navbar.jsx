@@ -4,7 +4,7 @@ import { motion, useScroll, useMotionValueEvent, AnimatePresence } from "motion/
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
-import { IconMenu2, IconX } from "@tabler/icons-react";
+import { IconMenu2, IconX, IconLayoutDashboard, IconTicket } from "@tabler/icons-react";
 import useUIStore from "@/store/useUIStore";
 import useAuthStore from "@/store/useAuthStore";
 
@@ -16,9 +16,13 @@ export function Navbar() {
   const { user, isSignedIn } = useUser();
   const { dbUser, syncUser } = useAuthStore();
 
+  // Check if user is admin
+  const isAdmin = dbUser?.role === "admin";
+
   useEffect(() => {
     if (isSignedIn && user) {
-      syncUser(user.id);
+      // Pass full user object so syncUser can create user if needed
+      syncUser(user.id, user);
     }
   }, [isSignedIn, user, syncUser]);
   
@@ -96,6 +100,36 @@ export function Navbar() {
           <div className="flex items-center gap-2">
             {/* Theme Toggle */}
             <ModeToggle />
+
+            {/* My Bookings Button - Visible for signed in users */}
+            <SignedIn>
+              <Link to="/my-bookings">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="hidden md:flex items-center gap-1.5 text-foreground/70 hover:text-foreground hover:bg-accent/50"
+                >
+                  <IconTicket size={16} />
+                  <span className="text-xs font-medium">My Bookings</span>
+                </Button>
+              </Link>
+            </SignedIn>
+
+            {/* Admin Dashboard Button - Only visible to admins */}
+            <SignedIn>
+              {isAdmin && (
+                <Link to="/admin">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="hidden md:flex items-center gap-1.5 border-border/60 hover:border-border hover:bg-accent/50"
+                  >
+                    <IconLayoutDashboard size={16} />
+                    <span className="text-xs font-medium">Dashboard</span>
+                  </Button>
+                </Link>
+              )}
+            </SignedIn>
 
             {/* Auth Buttons */}
             <SignedIn>
@@ -201,6 +235,30 @@ export function Navbar() {
                     {link.label}
                   </Link>
                 ))}
+                
+                {/* My Bookings Link - Mobile (for signed in users) */}
+                <SignedIn>
+                  <Link
+                    to="/my-bookings"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="px-4 py-3 text-base font-medium text-foreground/70 hover:text-foreground hover:bg-accent rounded-md transition-colors flex items-center gap-2"
+                  >
+                    <IconTicket size={18} />
+                    My Bookings
+                  </Link>
+                </SignedIn>
+                
+                {/* Admin Dashboard Link - Mobile */}
+                {isAdmin && (
+                  <Link
+                    to="/admin"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="px-4 py-3 text-base font-medium text-primary hover:text-primary hover:bg-primary/10 rounded-md transition-colors flex items-center gap-2"
+                  >
+                    <IconLayoutDashboard size={18} />
+                    Admin Dashboard
+                  </Link>
+                )}
               </nav>
             </div>
           </motion.div>
