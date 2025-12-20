@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
-import { 
-  IconDashboard, 
-  IconBuilding, 
-  IconPlane, 
-  IconTrain, 
-  IconBus, 
-  IconCar, 
-  IconToolsKitchen2, 
-  IconUserCheck, 
+import {
+  IconDashboard,
+  IconBuilding,
+  IconPlane,
+  IconTrain,
+  IconBus,
+  IconCar,
+  IconToolsKitchen2,
+  IconUserCheck,
   IconCalendarEvent,
   IconUsers,
   IconPlus,
@@ -31,6 +31,7 @@ import {
   IconArrowLeft,
   IconDotsVertical,
   IconEye,
+  IconBuildingStore,
 } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -53,12 +54,13 @@ const tabs = [
   { id: "guides", label: "Guides", icon: IconUserCheck },
   { id: "bookings", label: "Bookings", icon: IconCalendarEvent },
   { id: "users", label: "Users", icon: IconUsers },
+  { id: "sellerRequests", label: "Seller Requests", icon: IconBuildingStore },
 ];
 
 // Access Denied Component
 const AccessDenied = () => {
   const navigate = useNavigate();
-  
+
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
       <motion.div
@@ -71,7 +73,8 @@ const AccessDenied = () => {
         </div>
         <h1 className="text-2xl font-bold mb-2">Access Denied</h1>
         <p className="text-muted-foreground mb-6">
-          You don't have permission to access the admin dashboard. Only administrators can view this page.
+          You don't have permission to access the admin dashboard. Only
+          administrators can view this page.
         </p>
         <Button onClick={() => navigate("/")} className="gap-2">
           <IconHome size={16} />
@@ -89,16 +92,28 @@ const StatCard = ({ title, value, icon: Icon, gradient, subtitle }) => (
     animate={{ opacity: 1, y: 0 }}
     className="relative overflow-hidden bg-card rounded-2xl border border-border p-6 group hover:shadow-lg transition-all duration-300"
   >
-    <div className={cn("absolute inset-0 opacity-5 group-hover:opacity-10 transition-opacity", gradient)} />
+    <div
+      className={cn(
+        "absolute inset-0 opacity-5 group-hover:opacity-10 transition-opacity",
+        gradient
+      )}
+    />
     <div className="relative">
       <div className="flex items-start justify-between mb-4">
-        <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center", gradient)}>
+        <div
+          className={cn(
+            "w-12 h-12 rounded-xl flex items-center justify-center",
+            gradient
+          )}
+        >
           <Icon size={24} className="text-white" />
         </div>
       </div>
       <p className="text-3xl font-bold tracking-tight">{value}</p>
       <p className="text-sm text-muted-foreground mt-1">{title}</p>
-      {subtitle && <p className="text-xs text-muted-foreground/70 mt-2">{subtitle}</p>}
+      {subtitle && (
+        <p className="text-xs text-muted-foreground/70 mt-2">{subtitle}</p>
+      )}
     </div>
   </motion.div>
 );
@@ -114,16 +129,23 @@ const ImageUploadField = ({ value, onChange, label }) => {
   return (
     <div className="space-y-3">
       <label className="text-sm font-medium">{label}</label>
-      
+
       {/* Preview / Placeholder */}
       <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-muted/20 border-2 border-dashed border-border/50 group">
         {preview ? (
           <>
-            <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+            <img
+              src={preview}
+              alt="Preview"
+              className="w-full h-full object-cover"
+            />
             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
               <button
                 type="button"
-                onClick={() => { setPreview(""); onChange(""); }}
+                onClick={() => {
+                  setPreview("");
+                  onChange("");
+                }}
                 className="px-4 py-2 rounded-lg bg-white/20 backdrop-blur-sm text-white text-sm font-medium hover:bg-white/30 transition-colors flex items-center gap-2"
               >
                 <IconTrash size={16} />
@@ -138,23 +160,30 @@ const ImageUploadField = ({ value, onChange, label }) => {
           </div>
         )}
       </div>
-      
+
       {/* URL Input */}
       <div className="relative">
-        <IconPhoto size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+        <IconPhoto
+          size={16}
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground"
+        />
         <input
           type="text"
           value={value || ""}
-          onChange={(e) => { onChange(e.target.value); setPreview(e.target.value); }}
+          onChange={(e) => {
+            onChange(e.target.value);
+            setPreview(e.target.value);
+          }}
           placeholder="Paste image URL here..."
           className="w-full pl-11 pr-4 py-3 rounded-xl bg-muted/30 border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-sm"
         />
       </div>
-      <p className="text-xs text-muted-foreground">Tip: Use Unsplash, Pexels, or any direct image URL</p>
+      <p className="text-xs text-muted-foreground">
+        Tip: Use Unsplash, Pexels, or any direct image URL
+      </p>
     </div>
   );
 };
-
 
 // Modern Data Table Component
 const DataTable = ({ columns, data, onEdit, onDelete, onView, loading }) => {
@@ -162,7 +191,10 @@ const DataTable = ({ columns, data, onEdit, onDelete, onView, loading }) => {
     return (
       <div className="flex items-center justify-center py-16">
         <div className="text-center">
-          <IconLoader2 className="animate-spin text-primary mx-auto mb-3" size={32} />
+          <IconLoader2
+            className="animate-spin text-primary mx-auto mb-3"
+            size={32}
+          />
           <p className="text-sm text-muted-foreground">Loading data...</p>
         </div>
       </div>
@@ -186,17 +218,22 @@ const DataTable = ({ columns, data, onEdit, onDelete, onView, loading }) => {
         <thead>
           <tr className="border-b border-border/50">
             {columns.map((col) => (
-              <th key={col.key} className="text-left py-4 px-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              <th
+                key={col.key}
+                className="text-left py-4 px-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+              >
                 {col.label}
               </th>
             ))}
-            <th className="text-right py-4 px-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Actions</th>
+            <th className="text-right py-4 px-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Actions
+            </th>
           </tr>
         </thead>
         <tbody className="divide-y divide-border/30">
           {data.map((row, idx) => (
-            <motion.tr 
-              key={row._id || idx} 
+            <motion.tr
+              key={row._id || idx}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: idx * 0.02 }}
@@ -204,20 +241,37 @@ const DataTable = ({ columns, data, onEdit, onDelete, onView, loading }) => {
             >
               {columns.map((col) => (
                 <td key={col.key} className="py-4 px-4 text-sm">
-                  {col.render ? col.render(row[col.key], row) : row[col.key] || "-"}
+                  {col.render
+                    ? col.render(row[col.key], row)
+                    : row[col.key] || "-"}
                 </td>
               ))}
               <td className="py-4 px-4 text-right">
                 <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   {onView && (
-                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onView(row)}>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() => onView(row)}
+                    >
                       <IconEye size={15} />
                     </Button>
                   )}
-                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onEdit(row)}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => onEdit(row)}
+                  >
                     <IconEdit size={15} />
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => onDelete(row._id)}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-destructive hover:text-destructive"
+                    onClick={() => onDelete(row._id)}
+                  >
                     <IconTrash size={15} />
                   </Button>
                 </div>
@@ -231,7 +285,15 @@ const DataTable = ({ columns, data, onEdit, onDelete, onView, loading }) => {
 };
 
 // Modern Form Modal Component - Wide Layout
-const FormModal = ({ isOpen, onClose, title, fields, initialData, onSubmit, loading }) => {
+const FormModal = ({
+  isOpen,
+  onClose,
+  title,
+  fields,
+  initialData,
+  onSubmit,
+  loading,
+}) => {
   const [formData, setFormData] = useState({});
 
   useEffect(() => {
@@ -250,20 +312,20 @@ const FormModal = ({ isOpen, onClose, title, fields, initialData, onSubmit, load
   if (!isOpen) return null;
 
   // Separate image fields from other fields
-  const imageFields = fields.filter(f => f.type === "image");
-  const otherFields = fields.filter(f => f.type !== "image");
+  const imageFields = fields.filter((f) => f.type === "image");
+  const otherFields = fields.filter((f) => f.type !== "image");
   const halfIndex = Math.ceil(otherFields.length / 2);
   const leftFields = otherFields.slice(0, halfIndex);
   const rightFields = otherFields.slice(halfIndex);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm" 
-        onClick={onClose} 
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        onClick={onClose}
       />
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -275,26 +337,37 @@ const FormModal = ({ isOpen, onClose, title, fields, initialData, onSubmit, load
         <div className="flex-shrink-0 bg-gradient-to-r from-card to-card/95 backdrop-blur-sm px-8 py-5 border-b border-border/50 flex items-center justify-between">
           <div>
             <h2 className="text-xl font-bold">{title}</h2>
-            <p className="text-sm text-muted-foreground mt-0.5">Fill in the details below</p>
+            <p className="text-sm text-muted-foreground mt-0.5">
+              Fill in the details below
+            </p>
           </div>
-          <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-muted/50" onClick={onClose}>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-10 w-10 rounded-full hover:bg-muted/50"
+            onClick={onClose}
+          >
             <IconX size={20} />
           </Button>
         </div>
-        
+
         {/* Form - Scrollable */}
         <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
           <div className="flex-1 overflow-y-auto p-8">
             {/* Image Section */}
             {imageFields.length > 0 && (
               <div className="mb-8 pb-8 border-b border-border/50">
-                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">Media</h3>
+                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">
+                  Media
+                </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {imageFields.map((field) => (
                     <ImageUploadField
                       key={field.key}
                       value={formData[field.key]}
-                      onChange={(val) => setFormData({ ...formData, [field.key]: val })}
+                      onChange={(val) =>
+                        setFormData({ ...formData, [field.key]: val })
+                      }
                       label={field.label}
                     />
                   ))}
@@ -310,33 +383,61 @@ const FormModal = ({ isOpen, onClose, title, fields, initialData, onSubmit, load
                   <div key={field.key} className="space-y-2">
                     <label className="text-sm font-medium flex items-center gap-2">
                       {field.label}
-                      {field.required && <span className="text-destructive text-xs">*</span>}
+                      {field.required && (
+                        <span className="text-destructive text-xs">*</span>
+                      )}
                     </label>
                     {field.type === "select" ? (
                       <select
                         value={formData[field.key] || ""}
-                        onChange={(e) => setFormData({ ...formData, [field.key]: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            [field.key]: e.target.value,
+                          })
+                        }
                         className="w-full px-4 py-3 rounded-xl bg-muted/30 border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-sm"
                         required={field.required}
                       >
                         <option value="">Select...</option>
                         {field.options.map((opt) => (
-                          <option key={opt.value} value={opt.value}>{opt.label}</option>
+                          <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </option>
                         ))}
                       </select>
                     ) : field.type === "textarea" ? (
                       <textarea
                         value={formData[field.key] || ""}
-                        onChange={(e) => setFormData({ ...formData, [field.key]: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            [field.key]: e.target.value,
+                          })
+                        }
                         className="w-full px-4 py-3 rounded-xl bg-muted/30 border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all min-h-[120px] resize-none text-sm"
                         required={field.required}
-                        placeholder={field.placeholder || `Enter ${field.label.toLowerCase()}...`}
+                        placeholder={
+                          field.placeholder ||
+                          `Enter ${field.label.toLowerCase()}...`
+                        }
                       />
                     ) : field.type === "array" ? (
                       <input
                         type="text"
-                        value={Array.isArray(formData[field.key]) ? formData[field.key].join(", ") : formData[field.key] || ""}
-                        onChange={(e) => setFormData({ ...formData, [field.key]: e.target.value.split(",").map(s => s.trim()) })}
+                        value={
+                          Array.isArray(formData[field.key])
+                            ? formData[field.key].join(", ")
+                            : formData[field.key] || ""
+                        }
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            [field.key]: e.target.value
+                              .split(",")
+                              .map((s) => s.trim()),
+                          })
+                        }
                         className="w-full px-4 py-3 rounded-xl bg-muted/30 border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-sm"
                         placeholder="Comma separated values..."
                       />
@@ -344,10 +445,21 @@ const FormModal = ({ isOpen, onClose, title, fields, initialData, onSubmit, load
                       <input
                         type={field.type || "text"}
                         value={formData[field.key] || ""}
-                        onChange={(e) => setFormData({ ...formData, [field.key]: field.type === "number" ? parseFloat(e.target.value) || "" : e.target.value })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            [field.key]:
+                              field.type === "number"
+                                ? parseFloat(e.target.value) || ""
+                                : e.target.value,
+                          })
+                        }
                         className="w-full px-4 py-3 rounded-xl bg-muted/30 border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-sm"
                         required={field.required}
-                        placeholder={field.placeholder || `Enter ${field.label.toLowerCase()}...`}
+                        placeholder={
+                          field.placeholder ||
+                          `Enter ${field.label.toLowerCase()}...`
+                        }
                       />
                     )}
                   </div>
@@ -360,33 +472,61 @@ const FormModal = ({ isOpen, onClose, title, fields, initialData, onSubmit, load
                   <div key={field.key} className="space-y-2">
                     <label className="text-sm font-medium flex items-center gap-2">
                       {field.label}
-                      {field.required && <span className="text-destructive text-xs">*</span>}
+                      {field.required && (
+                        <span className="text-destructive text-xs">*</span>
+                      )}
                     </label>
                     {field.type === "select" ? (
                       <select
                         value={formData[field.key] || ""}
-                        onChange={(e) => setFormData({ ...formData, [field.key]: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            [field.key]: e.target.value,
+                          })
+                        }
                         className="w-full px-4 py-3 rounded-xl bg-muted/30 border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-sm"
                         required={field.required}
                       >
                         <option value="">Select...</option>
                         {field.options.map((opt) => (
-                          <option key={opt.value} value={opt.value}>{opt.label}</option>
+                          <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </option>
                         ))}
                       </select>
                     ) : field.type === "textarea" ? (
                       <textarea
                         value={formData[field.key] || ""}
-                        onChange={(e) => setFormData({ ...formData, [field.key]: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            [field.key]: e.target.value,
+                          })
+                        }
                         className="w-full px-4 py-3 rounded-xl bg-muted/30 border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all min-h-[120px] resize-none text-sm"
                         required={field.required}
-                        placeholder={field.placeholder || `Enter ${field.label.toLowerCase()}...`}
+                        placeholder={
+                          field.placeholder ||
+                          `Enter ${field.label.toLowerCase()}...`
+                        }
                       />
                     ) : field.type === "array" ? (
                       <input
                         type="text"
-                        value={Array.isArray(formData[field.key]) ? formData[field.key].join(", ") : formData[field.key] || ""}
-                        onChange={(e) => setFormData({ ...formData, [field.key]: e.target.value.split(",").map(s => s.trim()) })}
+                        value={
+                          Array.isArray(formData[field.key])
+                            ? formData[field.key].join(", ")
+                            : formData[field.key] || ""
+                        }
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            [field.key]: e.target.value
+                              .split(",")
+                              .map((s) => s.trim()),
+                          })
+                        }
                         className="w-full px-4 py-3 rounded-xl bg-muted/30 border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-sm"
                         placeholder="Comma separated values..."
                       />
@@ -394,10 +534,21 @@ const FormModal = ({ isOpen, onClose, title, fields, initialData, onSubmit, load
                       <input
                         type={field.type || "text"}
                         value={formData[field.key] || ""}
-                        onChange={(e) => setFormData({ ...formData, [field.key]: field.type === "number" ? parseFloat(e.target.value) || "" : e.target.value })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            [field.key]:
+                              field.type === "number"
+                                ? parseFloat(e.target.value) || ""
+                                : e.target.value,
+                          })
+                        }
                         className="w-full px-4 py-3 rounded-xl bg-muted/30 border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-sm"
                         required={field.required}
-                        placeholder={field.placeholder || `Enter ${field.label.toLowerCase()}...`}
+                        placeholder={
+                          field.placeholder ||
+                          `Enter ${field.label.toLowerCase()}...`
+                        }
                       />
                     )}
                   </div>
@@ -405,20 +556,31 @@ const FormModal = ({ isOpen, onClose, title, fields, initialData, onSubmit, load
               </div>
             </div>
           </div>
-          
+
           {/* Actions - Fixed Footer */}
           <div className="flex-shrink-0 bg-card border-t border-border/50 px-8 py-5 flex items-center justify-end gap-4">
-            <Button type="button" variant="outline" onClick={onClose} className="rounded-xl h-11 px-6">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              className="rounded-xl h-11 px-6"
+            >
               Cancel
             </Button>
-            <Button type="submit" className="rounded-xl h-11 px-8 min-w-[140px]" disabled={loading}>
+            <Button
+              type="submit"
+              className="rounded-xl h-11 px-8 min-w-[140px]"
+              disabled={loading}
+            >
               {loading ? (
                 <>
                   <IconLoader2 className="animate-spin mr-2" size={16} />
                   Saving...
                 </>
+              ) : initialData?._id ? (
+                "Save Changes"
               ) : (
-                initialData?._id ? "Save Changes" : "Create"
+                "Create"
               )}
             </Button>
           </div>
@@ -435,8 +597,17 @@ const serviceFields = {
     { key: "image", label: "Cover Image", type: "image" },
     { key: "location", label: "Location", required: true },
     { key: "rating", label: "Rating (1-5)", type: "number" },
-    { key: "price", label: "Price Display (e.g. ₹8,500/night)", required: true },
-    { key: "priceValue", label: "Price Value (number only)", type: "number", required: true },
+    {
+      key: "price",
+      label: "Price Display (e.g. ₹8,500/night)",
+      required: true,
+    },
+    {
+      key: "priceValue",
+      label: "Price Value (number only)",
+      type: "number",
+      required: true,
+    },
     { key: "amenities", label: "Amenities", type: "array" },
     { key: "greenScore", label: "Green/Eco Score" },
     { key: "description", label: "Description", type: "textarea" },
@@ -451,11 +622,16 @@ const serviceFields = {
     { key: "duration", label: "Flight Duration", required: true },
     { key: "price", label: "Price Display", required: true },
     { key: "priceValue", label: "Price Value", type: "number", required: true },
-    { key: "class", label: "Travel Class", type: "select", options: [
-      { value: "Economy", label: "Economy" },
-      { value: "Business", label: "Business" },
-      { value: "First", label: "First Class" },
-    ]},
+    {
+      key: "class",
+      label: "Travel Class",
+      type: "select",
+      options: [
+        { value: "Economy", label: "Economy" },
+        { value: "Business", label: "Business" },
+        { value: "First", label: "First Class" },
+      ],
+    },
     { key: "stops", label: "Stops (e.g. Non-stop, 1 Stop)" },
   ],
   trains: [
@@ -470,11 +646,16 @@ const serviceFields = {
     { key: "price", label: "Price Display", required: true },
     { key: "priceValue", label: "Price Value", type: "number", required: true },
     { key: "class", label: "Class" },
-    { key: "availability", label: "Availability", type: "select", options: [
-      { value: "Available", label: "Available" },
-      { value: "RAC", label: "RAC" },
-      { value: "Waitlist", label: "Waitlist" },
-    ]},
+    {
+      key: "availability",
+      label: "Availability",
+      type: "select",
+      options: [
+        { value: "Available", label: "Available" },
+        { value: "RAC", label: "RAC" },
+        { value: "Waitlist", label: "Waitlist" },
+      ],
+    },
   ],
   buses: [
     { key: "operator", label: "Bus Operator", required: true },
@@ -497,13 +678,23 @@ const serviceFields = {
     { key: "capacity", label: "Seating Capacity", required: true },
     { key: "pricePerKm", label: "Price Per Km", required: true },
     { key: "basePrice", label: "Base Price Display", required: true },
-    { key: "basePriceValue", label: "Base Price Value", type: "number", required: true },
+    {
+      key: "basePriceValue",
+      label: "Base Price Value",
+      type: "number",
+      required: true,
+    },
     { key: "features", label: "Features", type: "array" },
     { key: "rating", label: "Rating", type: "number" },
-    { key: "eco", label: "Eco-Friendly", type: "select", options: [
-      { value: "true", label: "Yes" },
-      { value: "false", label: "No" },
-    ]},
+    {
+      key: "eco",
+      label: "Eco-Friendly",
+      type: "select",
+      options: [
+        { value: "true", label: "Yes" },
+        { value: "false", label: "No" },
+      ],
+    },
   ],
   restaurants: [
     { key: "name", label: "Restaurant Name", required: true },
@@ -533,114 +724,371 @@ const serviceFields = {
 // Column configurations with image support
 const serviceColumns = {
   hotels: [
-    { key: "image", label: "", render: (v) => v ? <img src={v} className="w-10 h-10 rounded-lg object-cover" /> : <div className="w-10 h-10 rounded-lg bg-muted/50 flex items-center justify-center"><IconPhoto size={16} className="text-muted-foreground" /></div> },
-    { key: "name", label: "Name", render: (v) => <span className="font-medium">{v}</span> },
+    {
+      key: "image",
+      label: "",
+      render: (v) =>
+        v ? (
+          <img src={v} className="w-10 h-10 rounded-lg object-cover" />
+        ) : (
+          <div className="w-10 h-10 rounded-lg bg-muted/50 flex items-center justify-center">
+            <IconPhoto size={16} className="text-muted-foreground" />
+          </div>
+        ),
+    },
+    {
+      key: "name",
+      label: "Name",
+      render: (v) => <span className="font-medium">{v}</span>,
+    },
     { key: "location", label: "Location" },
-    { key: "rating", label: "Rating", render: (v) => v ? <span className="text-amber-500">★ {v.toFixed(1)}</span> : "-" },
+    {
+      key: "rating",
+      label: "Rating",
+      render: (v) =>
+        v ? <span className="text-amber-500">★ {v.toFixed(1)}</span> : "-",
+    },
     { key: "price", label: "Price" },
   ],
   flights: [
-    { key: "image", label: "", render: (v) => v ? <img src={v} className="w-10 h-10 rounded-lg object-cover" /> : <div className="w-10 h-10 rounded-lg bg-muted/50 flex items-center justify-center"><IconPlane size={16} className="text-muted-foreground" /></div> },
-    { key: "airline", label: "Airline", render: (v) => <span className="font-medium">{v}</span> },
+    {
+      key: "image",
+      label: "",
+      render: (v) =>
+        v ? (
+          <img src={v} className="w-10 h-10 rounded-lg object-cover" />
+        ) : (
+          <div className="w-10 h-10 rounded-lg bg-muted/50 flex items-center justify-center">
+            <IconPlane size={16} className="text-muted-foreground" />
+          </div>
+        ),
+    },
+    {
+      key: "airline",
+      label: "Airline",
+      render: (v) => <span className="font-medium">{v}</span>,
+    },
     { key: "from", label: "From" },
     { key: "to", label: "To" },
     { key: "price", label: "Price" },
-    { key: "class", label: "Class", render: (v) => <Badge variant="outline">{v}</Badge> },
+    {
+      key: "class",
+      label: "Class",
+      render: (v) => <Badge variant="outline">{v}</Badge>,
+    },
   ],
   trains: [
-    { key: "image", label: "", render: (v) => v ? <img src={v} className="w-10 h-10 rounded-lg object-cover" /> : <div className="w-10 h-10 rounded-lg bg-muted/50 flex items-center justify-center"><IconTrain size={16} className="text-muted-foreground" /></div> },
-    { key: "name", label: "Name", render: (v) => <span className="font-medium">{v}</span> },
+    {
+      key: "image",
+      label: "",
+      render: (v) =>
+        v ? (
+          <img src={v} className="w-10 h-10 rounded-lg object-cover" />
+        ) : (
+          <div className="w-10 h-10 rounded-lg bg-muted/50 flex items-center justify-center">
+            <IconTrain size={16} className="text-muted-foreground" />
+          </div>
+        ),
+    },
+    {
+      key: "name",
+      label: "Name",
+      render: (v) => <span className="font-medium">{v}</span>,
+    },
     { key: "trainNo", label: "Train No" },
     { key: "from", label: "From" },
     { key: "to", label: "To" },
-    { key: "availability", label: "Status", render: (v) => (
-      <Badge variant={v === "Available" ? "default" : v === "RAC" ? "secondary" : "destructive"} className="text-xs">{v}</Badge>
-    )},
+    {
+      key: "availability",
+      label: "Status",
+      render: (v) => (
+        <Badge
+          variant={
+            v === "Available"
+              ? "default"
+              : v === "RAC"
+              ? "secondary"
+              : "destructive"
+          }
+          className="text-xs"
+        >
+          {v}
+        </Badge>
+      ),
+    },
   ],
   buses: [
-    { key: "image", label: "", render: (v) => v ? <img src={v} className="w-10 h-10 rounded-lg object-cover" /> : <div className="w-10 h-10 rounded-lg bg-muted/50 flex items-center justify-center"><IconBus size={16} className="text-muted-foreground" /></div> },
-    { key: "operator", label: "Operator", render: (v) => <span className="font-medium">{v}</span> },
+    {
+      key: "image",
+      label: "",
+      render: (v) =>
+        v ? (
+          <img src={v} className="w-10 h-10 rounded-lg object-cover" />
+        ) : (
+          <div className="w-10 h-10 rounded-lg bg-muted/50 flex items-center justify-center">
+            <IconBus size={16} className="text-muted-foreground" />
+          </div>
+        ),
+    },
+    {
+      key: "operator",
+      label: "Operator",
+      render: (v) => <span className="font-medium">{v}</span>,
+    },
     { key: "type", label: "Type" },
     { key: "from", label: "From" },
     { key: "to", label: "To" },
     { key: "price", label: "Price" },
   ],
   taxis: [
-    { key: "image", label: "", render: (v) => v ? <img src={v} className="w-10 h-10 rounded-lg object-cover" /> : <div className="w-10 h-10 rounded-lg bg-muted/50 flex items-center justify-center"><IconCar size={16} className="text-muted-foreground" /></div> },
-    { key: "type", label: "Type", render: (v) => <span className="font-medium">{v}</span> },
+    {
+      key: "image",
+      label: "",
+      render: (v) =>
+        v ? (
+          <img src={v} className="w-10 h-10 rounded-lg object-cover" />
+        ) : (
+          <div className="w-10 h-10 rounded-lg bg-muted/50 flex items-center justify-center">
+            <IconCar size={16} className="text-muted-foreground" />
+          </div>
+        ),
+    },
+    {
+      key: "type",
+      label: "Type",
+      render: (v) => <span className="font-medium">{v}</span>,
+    },
     { key: "model", label: "Model" },
     { key: "capacity", label: "Capacity" },
     { key: "basePrice", label: "Base Price" },
-    { key: "eco", label: "Eco", render: (v) => v === true || v === "true" ? <Badge className="bg-emerald-500">Eco</Badge> : null },
+    {
+      key: "eco",
+      label: "Eco",
+      render: (v) =>
+        v === true || v === "true" ? (
+          <Badge className="bg-emerald-500">Eco</Badge>
+        ) : null,
+    },
   ],
   restaurants: [
-    { key: "image", label: "", render: (v) => v ? <img src={v} className="w-10 h-10 rounded-lg object-cover" /> : <div className="w-10 h-10 rounded-lg bg-muted/50 flex items-center justify-center"><IconToolsKitchen2 size={16} className="text-muted-foreground" /></div> },
-    { key: "name", label: "Name", render: (v) => <span className="font-medium">{v}</span> },
+    {
+      key: "image",
+      label: "",
+      render: (v) =>
+        v ? (
+          <img src={v} className="w-10 h-10 rounded-lg object-cover" />
+        ) : (
+          <div className="w-10 h-10 rounded-lg bg-muted/50 flex items-center justify-center">
+            <IconToolsKitchen2 size={16} className="text-muted-foreground" />
+          </div>
+        ),
+    },
+    {
+      key: "name",
+      label: "Name",
+      render: (v) => <span className="font-medium">{v}</span>,
+    },
     { key: "cuisine", label: "Cuisine" },
     { key: "location", label: "Location" },
-    { key: "rating", label: "Rating", render: (v) => v ? <span className="text-amber-500">★ {v.toFixed(1)}</span> : "-" },
+    {
+      key: "rating",
+      label: "Rating",
+      render: (v) =>
+        v ? <span className="text-amber-500">★ {v.toFixed(1)}</span> : "-",
+    },
     { key: "priceRange", label: "Price" },
   ],
   guides: [
-    { key: "image", label: "", render: (v) => v ? <img src={v} className="w-10 h-10 rounded-full object-cover" /> : <div className="w-10 h-10 rounded-full bg-muted/50 flex items-center justify-center"><IconUserCheck size={16} className="text-muted-foreground" /></div> },
-    { key: "name", label: "Name", render: (v) => <span className="font-medium">{v}</span> },
+    {
+      key: "image",
+      label: "",
+      render: (v) =>
+        v ? (
+          <img src={v} className="w-10 h-10 rounded-full object-cover" />
+        ) : (
+          <div className="w-10 h-10 rounded-full bg-muted/50 flex items-center justify-center">
+            <IconUserCheck size={16} className="text-muted-foreground" />
+          </div>
+        ),
+    },
+    {
+      key: "name",
+      label: "Name",
+      render: (v) => <span className="font-medium">{v}</span>,
+    },
     { key: "location", label: "Area" },
     { key: "specialty", label: "Specialty" },
-    { key: "rating", label: "Rating", render: (v) => v ? <span className="text-amber-500">★ {v.toFixed(1)}</span> : "-" },
+    {
+      key: "rating",
+      label: "Rating",
+      render: (v) =>
+        v ? <span className="text-amber-500">★ {v.toFixed(1)}</span> : "-",
+    },
     { key: "price", label: "Price" },
   ],
 };
 
 const bookingColumns = [
-  { key: "confirmationCode", label: "Code", render: (v) => <span className="font-mono text-xs bg-muted/50 px-2 py-1 rounded">{v}</span> },
-  { key: "serviceName", label: "Service", render: (v) => <span className="font-medium">{v}</span> },
-  { key: "serviceType", label: "Type", render: (v) => <Badge variant="outline" className="capitalize">{v}</Badge> },
+  {
+    key: "confirmationCode",
+    label: "Code",
+    render: (v) => (
+      <span className="font-mono text-xs bg-muted/50 px-2 py-1 rounded">
+        {v}
+      </span>
+    ),
+  },
+  {
+    key: "serviceName",
+    label: "Service",
+    render: (v) => <span className="font-medium">{v}</span>,
+  },
+  {
+    key: "serviceType",
+    label: "Type",
+    render: (v) => (
+      <Badge variant="outline" className="capitalize">
+        {v}
+      </Badge>
+    ),
+  },
   { key: "userName", label: "Customer" },
-  { key: "totalPrice", label: "Amount", render: (v) => <span className="font-medium">₹{v?.toLocaleString()}</span> },
-  { key: "status", label: "Status", render: (v) => (
-    <Badge className={cn(
-      "text-xs",
-      v === "confirmed" && "bg-emerald-500",
-      v === "pending" && "bg-amber-500",
-      v === "cancelled" && "bg-destructive"
-    )}>{v}</Badge>
-  )},
+  {
+    key: "totalPrice",
+    label: "Amount",
+    render: (v) => <span className="font-medium">₹{v?.toLocaleString()}</span>,
+  },
+  {
+    key: "status",
+    label: "Status",
+    render: (v) => (
+      <Badge
+        className={cn(
+          "text-xs",
+          v === "confirmed" && "bg-emerald-500",
+          v === "pending" && "bg-amber-500",
+          v === "cancelled" && "bg-destructive"
+        )}
+      >
+        {v}
+      </Badge>
+    ),
+  },
+];
+
+const sellerRequestColumns = [
+  {
+    key: "businessName",
+    label: "Business Name",
+    render: (v) => <span className="font-medium">{v}</span>,
+  },
+  {
+    key: "businessType",
+    label: "Type",
+    render: (v) => (
+      <Badge variant="outline" className="capitalize">
+        {v}
+      </Badge>
+    ),
+  },
+  {
+    key: "userId",
+    label: "User",
+    render: (v) =>
+      v
+        ? `${v.firstName || ""} ${v.lastName || ""} (${v.email || ""})`
+        : "Unknown",
+  },
+  { key: "serviceLocation", label: "Location" },
+  {
+    key: "status",
+    label: "Status",
+    render: (v) => (
+      <Badge
+        className={cn(
+          "text-xs",
+          v === "approved" && "bg-emerald-500",
+          v === "pending" && "bg-amber-500",
+          v === "rejected" && "bg-destructive"
+        )}
+      >
+        {v}
+      </Badge>
+    ),
+  },
 ];
 
 // Role and Tier mappings
-const roleLabels = { admin: "Admin", traveller: "Traveller", seller: "Service Provider" };
+const roleLabels = {
+  admin: "Admin",
+  traveller: "Traveller",
+  seller: "Service Provider",
+};
 const tierLabels = { bronze: "Bronze", silver: "Silver", gold: "Gold" };
 
 const userColumns = [
-  { key: "avatar", label: "", render: (v) => v ? <img src={v} className="w-8 h-8 rounded-full object-cover" /> : <div className="w-8 h-8 rounded-full bg-muted/50" /> },
-  { key: "email", label: "Email", render: (v) => <span className="font-medium">{v}</span> },
-  { key: "firstName", label: "Name", render: (v, row) => `${v || ""} ${row.lastName || ""}`.trim() || "-" },
-  { key: "role", label: "Role", render: (v) => (
-    <Badge variant={v === "admin" ? "default" : v === "seller" ? "outline" : "secondary"}>
-      {roleLabels[v] || v}
-    </Badge>
-  )},
-  { key: "subscriptionTier", label: "Tier", render: (v) => (
-    <Badge className={cn(
-      v === "gold" && "bg-amber-500",
-      v === "silver" && "bg-slate-400",
-      v === "bronze" && "bg-orange-600"
-    )}>{tierLabels[v] || v}</Badge>
-  )},
+  {
+    key: "avatar",
+    label: "",
+    render: (v) =>
+      v ? (
+        <img src={v} className="w-8 h-8 rounded-full object-cover" />
+      ) : (
+        <div className="w-8 h-8 rounded-full bg-muted/50" />
+      ),
+  },
+  {
+    key: "email",
+    label: "Email",
+    render: (v) => <span className="font-medium">{v}</span>,
+  },
+  {
+    key: "firstName",
+    label: "Name",
+    render: (v, row) => `${v || ""} ${row.lastName || ""}`.trim() || "-",
+  },
+  {
+    key: "role",
+    label: "Role",
+    render: (v) => (
+      <Badge
+        variant={
+          v === "admin" ? "default" : v === "seller" ? "outline" : "secondary"
+        }
+      >
+        {roleLabels[v] || v}
+      </Badge>
+    ),
+  },
+  {
+    key: "subscriptionTier",
+    label: "Tier",
+    render: (v) => (
+      <Badge
+        className={cn(
+          v === "gold" && "bg-amber-500",
+          v === "silver" && "bg-slate-400",
+          v === "bronze" && "bg-orange-600"
+        )}
+      >
+        {tierLabels[v] || v}
+      </Badge>
+    ),
+  },
   { key: "standardCredits", label: "Credits" },
 ];
 
 export default function AdminPage() {
   const { dbUser } = useAuthStore();
   const navigate = useNavigate();
-  
+
   const [activeTab, setActiveTab] = useState("dashboard");
   const [stats, setStats] = useState(null);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [pagination, setPagination] = useState({ page: 1, pages: 1, total: 0 });
-  
+
   // Modal state
   const [modalOpen, setModalOpen] = useState(false);
   const [editItem, setEditItem] = useState(null);
@@ -678,13 +1126,30 @@ export default function AdminPage() {
         url = `${API_URL}/api/admin/bookings?page=${pagination.page}&search=${search}`;
       } else if (activeTab === "users") {
         url = `${API_URL}/api/admin/users?page=${pagination.page}&search=${search}`;
+      } else if (activeTab === "sellerRequests") {
+        url = `${API_URL}/api/seller/admin/requests`;
       } else {
         url = `${API_URL}/api/admin/services/${activeTab}?page=${pagination.page}&search=${search}`;
       }
 
       const res = await axios.get(url);
-      setData(res.data.data);
-      setPagination(res.data.pagination || { page: 1, pages: 1, total: res.data.data?.length || 0 });
+      if (activeTab === "sellerRequests") {
+        setData(res.data.requests);
+        setPagination({
+          page: 1,
+          pages: 1,
+          total: res.data.requests?.length || 0,
+        });
+      } else {
+        setData(res.data.data);
+        setPagination(
+          res.data.pagination || {
+            page: 1,
+            pages: 1,
+            total: res.data.data?.length || 0,
+          }
+        );
+      }
     } catch (error) {
       console.error("Failed to fetch data:", error);
       toast.error("Failed to fetch data");
@@ -721,10 +1186,26 @@ export default function AdminPage() {
           url = `${API_URL}/api/admin/services/${activeTab}/${editItem._id}`;
         }
         await axios.put(url, formData);
+        if (activeTab === "sellerRequests") {
+          url = `${API_URL}/api/seller/admin/request/${editItem._id}`;
+          await axios.put(url, formData);
+        } else {
+          if (activeTab === "bookings") {
+            url = `${API_URL}/api/admin/bookings/${editItem._id}`;
+          } else if (activeTab === "users") {
+            url = `${API_URL}/api/admin/users/${editItem._id}`;
+          } else {
+            url = `${API_URL}/api/admin/services/${activeTab}/${editItem._id}`;
+          }
+          await axios.put(url, formData);
+        }
         toast.success("Updated successfully");
       } else {
         // Create
-        await axios.post(`${API_URL}/api/admin/services/${activeTab}`, formData);
+        await axios.post(
+          `${API_URL}/api/admin/services/${activeTab}`,
+          formData
+        );
         toast.success("Created successfully");
       }
       setModalOpen(false);
@@ -741,7 +1222,7 @@ export default function AdminPage() {
   // Handle delete
   const handleDelete = async (id) => {
     if (!confirm("Are you sure you want to delete this item?")) return;
-    
+
     try {
       let url = "";
       if (activeTab === "bookings") {
@@ -764,39 +1245,75 @@ export default function AdminPage() {
   const getColumns = () => {
     if (activeTab === "bookings") return bookingColumns;
     if (activeTab === "users") return userColumns;
+    if (activeTab === "sellerRequests") return sellerRequestColumns;
     return serviceColumns[activeTab] || [];
   };
 
   const getFields = () => {
     if (activeTab === "bookings") {
       return [
-        { key: "status", label: "Status", type: "select", options: [
-          { value: "pending", label: "Pending" },
-          { value: "confirmed", label: "Confirmed" },
-          { value: "cancelled", label: "Cancelled" },
-          { value: "completed", label: "Completed" },
-        ]},
+        {
+          key: "status",
+          label: "Status",
+          type: "select",
+          options: [
+            { value: "pending", label: "Pending" },
+            { value: "confirmed", label: "Confirmed" },
+            { value: "cancelled", label: "Cancelled" },
+            { value: "completed", label: "Completed" },
+          ],
+        },
       ];
     }
     if (activeTab === "users") {
       return [
-        { key: "role", label: "Role", type: "select", options: [
-          { value: "traveller", label: "Traveller" },
-          { value: "seller", label: "Service Provider" },
-          { value: "admin", label: "Admin" },
-        ]},
-        { key: "subscriptionTier", label: "Subscription Tier", type: "select", options: [
-          { value: "bronze", label: "Bronze" },
-          { value: "silver", label: "Silver" },
-          { value: "gold", label: "Gold" },
-        ]},
+        {
+          key: "role",
+          label: "Role",
+          type: "select",
+          options: [
+            { value: "traveller", label: "Traveller" },
+            { value: "seller", label: "Service Provider" },
+            { value: "admin", label: "Admin" },
+          ],
+        },
+        {
+          key: "subscriptionTier",
+          label: "Subscription Tier",
+          type: "select",
+          options: [
+            { value: "bronze", label: "Bronze" },
+            { value: "silver", label: "Silver" },
+            { value: "gold", label: "Gold" },
+          ],
+        },
         { key: "standardCredits", label: "AI Credits", type: "number" },
+      ];
+    }
+    if (activeTab === "sellerRequests") {
+      return [
+        {
+          key: "status",
+          label: "Status",
+          type: "select",
+          options: [
+            { value: "pending", label: "Pending" },
+            { value: "approved", label: "Approved" },
+            { value: "rejected", label: "Rejected" },
+          ],
+        },
+        {
+          key: "adminComments",
+          label: "Admin Comments",
+          type: "textarea",
+          placeholder: "Reason for approval/rejection...",
+        },
       ];
     }
     return serviceFields[activeTab] || [];
   };
 
-  const currentTab = tabs.find(t => t.id === activeTab);
+  const currentTab = tabs.find((t) => t.id === activeTab);
 
   return (
     <div className="min-h-screen bg-background">
@@ -805,14 +1322,19 @@ export default function AdminPage() {
         <aside className="w-64 min-h-screen bg-card/50 backdrop-blur-sm border-r border-border/50 p-4 sticky top-0 flex flex-col">
           {/* Header */}
           <div className="mb-8">
-            <Link to="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-4">
+            <Link
+              to="/"
+              className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-4"
+            >
               <IconArrowLeft size={16} />
               <span className="text-sm">Back to Site</span>
             </Link>
             <h1 className="text-xl font-bold">Admin Panel</h1>
-            <p className="text-xs text-muted-foreground mt-1">Manage your platform</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Manage your platform
+            </p>
           </div>
-          
+
           {/* Navigation */}
           <nav className="flex-1 space-y-1">
             {tabs.map((tab) => (
@@ -843,11 +1365,15 @@ export default function AdminPage() {
                 <img src={dbUser.avatar} className="w-8 h-8 rounded-full" />
               ) : (
                 <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                  <span className="text-xs font-medium">{dbUser?.firstName?.[0]}</span>
+                  <span className="text-xs font-medium">
+                    {dbUser?.firstName?.[0]}
+                  </span>
                 </div>
               )}
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">{dbUser?.firstName} {dbUser?.lastName}</p>
+                <p className="text-sm font-medium truncate">
+                  {dbUser?.firstName} {dbUser?.lastName}
+                </p>
                 <p className="text-xs text-muted-foreground">Administrator</p>
               </div>
             </div>
@@ -868,9 +1394,15 @@ export default function AdminPage() {
                 <div className="flex items-center justify-between mb-8">
                   <div>
                     <h2 className="text-2xl font-bold">Dashboard Overview</h2>
-                    <p className="text-muted-foreground">Welcome back! Here's what's happening.</p>
+                    <p className="text-muted-foreground">
+                      Welcome back! Here's what's happening.
+                    </p>
                   </div>
-                  <Button variant="outline" onClick={fetchStats} className="gap-2 rounded-xl">
+                  <Button
+                    variant="outline"
+                    onClick={fetchStats}
+                    className="gap-2 rounded-xl"
+                  >
                     <IconRefresh size={16} />
                     Refresh
                   </Button>
@@ -894,7 +1426,9 @@ export default function AdminPage() {
                   />
                   <StatCard
                     title="Revenue"
-                    value={`₹${(stats.bookings.totalRevenue || 0).toLocaleString()}`}
+                    value={`₹${(
+                      stats.bookings.totalRevenue || 0
+                    ).toLocaleString()}`}
                     icon={IconCurrencyRupee}
                     gradient="bg-gradient-to-br from-emerald-500 to-teal-500"
                     subtitle="Total earnings"
@@ -906,23 +1440,36 @@ export default function AdminPage() {
                     gradient="bg-gradient-to-br from-orange-500 to-amber-500"
                     subtitle="Registered accounts"
                   />
+                  <StatCard
+                    title="Pending Requests"
+                    value={stats.pendingSellerRequests || 0}
+                    icon={IconBuildingStore}
+                    gradient="bg-gradient-to-br from-purple-500 to-pink-500"
+                    subtitle="Awaiting approval"
+                  />
                 </div>
 
                 {/* Services Grid */}
                 <div className="bg-card rounded-2xl border border-border/50 p-6 mb-8">
-                  <h3 className="text-lg font-semibold mb-5">Services by Category</h3>
+                  <h3 className="text-lg font-semibold mb-5">
+                    Services by Category
+                  </h3>
                   <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-                    {Object.entries(stats.services).filter(([k]) => k !== "total").map(([key, value]) => (
-                      <motion.div 
-                        key={key}
-                        whileHover={{ scale: 1.02 }}
-                        className="text-center p-4 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer"
-                        onClick={() => setActiveTab(key)}
-                      >
-                        <p className="text-2xl font-bold">{value}</p>
-                        <p className="text-xs text-muted-foreground capitalize">{key}</p>
-                      </motion.div>
-                    ))}
+                    {Object.entries(stats.services)
+                      .filter(([k]) => k !== "total")
+                      .map(([key, value]) => (
+                        <motion.div
+                          key={key}
+                          whileHover={{ scale: 1.02 }}
+                          className="text-center p-4 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer"
+                          onClick={() => setActiveTab(key)}
+                        >
+                          <p className="text-2xl font-bold">{value}</p>
+                          <p className="text-xs text-muted-foreground capitalize">
+                            {key}
+                          </p>
+                        </motion.div>
+                      ))}
                   </div>
                 </div>
 
@@ -931,23 +1478,33 @@ export default function AdminPage() {
                   <div className="bg-card rounded-2xl border border-border/50 p-6">
                     <div className="flex items-center gap-3 mb-3">
                       <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                      <span className="text-sm font-medium">Confirmed Bookings</span>
+                      <span className="text-sm font-medium">
+                        Confirmed Bookings
+                      </span>
                     </div>
-                    <p className="text-3xl font-bold">{stats.bookings.confirmedBookings}</p>
+                    <p className="text-3xl font-bold">
+                      {stats.bookings.confirmedBookings}
+                    </p>
                   </div>
                   <div className="bg-card rounded-2xl border border-border/50 p-6">
                     <div className="flex items-center gap-3 mb-3">
                       <div className="w-2 h-2 rounded-full bg-amber-500" />
-                      <span className="text-sm font-medium">Pending Bookings</span>
+                      <span className="text-sm font-medium">
+                        Pending Bookings
+                      </span>
                     </div>
-                    <p className="text-3xl font-bold">{stats.bookings.pendingBookings}</p>
+                    <p className="text-3xl font-bold">
+                      {stats.bookings.pendingBookings}
+                    </p>
                   </div>
                   <div className="bg-card rounded-2xl border border-border/50 p-6">
                     <div className="flex items-center gap-3 mb-3">
                       <div className="w-2 h-2 rounded-full bg-red-500" />
                       <span className="text-sm font-medium">Cancelled</span>
                     </div>
-                    <p className="text-3xl font-bold">{stats.bookings.cancelledBookings}</p>
+                    <p className="text-3xl font-bold">
+                      {stats.bookings.cancelledBookings}
+                    </p>
                   </div>
                 </div>
 
@@ -980,19 +1537,32 @@ export default function AdminPage() {
               >
                 <div className="flex items-center justify-between mb-8">
                   <div className="flex items-center gap-4">
-                    <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center bg-primary/10")}>
-                      {currentTab && <currentTab.icon size={24} className="text-primary" />}
+                    <div
+                      className={cn(
+                        "w-12 h-12 rounded-xl flex items-center justify-center bg-primary/10"
+                      )}
+                    >
+                      {currentTab && (
+                        <currentTab.icon size={24} className="text-primary" />
+                      )}
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold capitalize">{activeTab}</h2>
-                      <p className="text-muted-foreground">{pagination.total} items total</p>
+                      <h2 className="text-2xl font-bold capitalize">
+                        {activeTab}
+                      </h2>
+                      <p className="text-muted-foreground">
+                        {pagination.total} items total
+                      </p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-3">
                     {/* Search */}
                     <div className="relative">
-                      <IconSearch size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                      <IconSearch
+                        size={16}
+                        className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+                      />
                       <input
                         type="text"
                         value={search}
@@ -1001,10 +1571,18 @@ export default function AdminPage() {
                         className="pl-10 pr-4 py-2.5 rounded-xl bg-muted/30 border border-border/50 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none w-64 transition-all"
                       />
                     </div>
-                    
+
                     {/* Add Button */}
-                    {!["bookings", "users", "dashboard"].includes(activeTab) && (
-                      <Button onClick={() => { setEditItem(null); setModalOpen(true); }} className="gap-2 rounded-xl">
+                    {!["bookings", "users", "dashboard"].includes(
+                      activeTab
+                    ) && (
+                      <Button
+                        onClick={() => {
+                          setEditItem(null);
+                          setModalOpen(true);
+                        }}
+                        className="gap-2 rounded-xl"
+                      >
                         <IconPlus size={16} />
                         Add New
                       </Button>
@@ -1018,10 +1596,13 @@ export default function AdminPage() {
                     columns={getColumns()}
                     data={data}
                     loading={loading}
-                    onEdit={(item) => { setEditItem(item); setModalOpen(true); }}
+                    onEdit={(item) => {
+                      setEditItem(item);
+                      setModalOpen(true);
+                    }}
                     onDelete={handleDelete}
                   />
-                  
+
                   {/* Pagination */}
                   {pagination.pages > 1 && (
                     <div className="flex items-center justify-between p-4 border-t border-border/50">
@@ -1033,7 +1614,12 @@ export default function AdminPage() {
                           variant="outline"
                           size="sm"
                           className="rounded-lg"
-                          onClick={() => setPagination({ ...pagination, page: pagination.page - 1 })}
+                          onClick={() =>
+                            setPagination({
+                              ...pagination,
+                              page: pagination.page - 1,
+                            })
+                          }
                           disabled={pagination.page <= 1}
                         >
                           <IconChevronLeft size={16} />
@@ -1042,7 +1628,12 @@ export default function AdminPage() {
                           variant="outline"
                           size="sm"
                           className="rounded-lg"
-                          onClick={() => setPagination({ ...pagination, page: pagination.page + 1 })}
+                          onClick={() =>
+                            setPagination({
+                              ...pagination,
+                              page: pagination.page + 1,
+                            })
+                          }
                           disabled={pagination.page >= pagination.pages}
                         >
                           <IconChevronRight size={16} />
@@ -1062,8 +1653,15 @@ export default function AdminPage() {
         {modalOpen && (
           <FormModal
             isOpen={modalOpen}
-            onClose={() => { setModalOpen(false); setEditItem(null); }}
-            title={editItem?._id ? `Edit ${activeTab.slice(0, -1)}` : `Add New ${activeTab.slice(0, -1)}`}
+            onClose={() => {
+              setModalOpen(false);
+              setEditItem(null);
+            }}
+            title={
+              editItem?._id
+                ? `Edit ${activeTab.slice(0, -1)}`
+                : `Add New ${activeTab.slice(0, -1)}`
+            }
             fields={getFields()}
             initialData={editItem}
             onSubmit={handleSubmit}
