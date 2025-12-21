@@ -276,7 +276,7 @@ export function Navbar() {
                         <path d="m.0562286 25.5c.6043994 8.1514 6.0946514 14.9431 13.5527714 17.4568-.899-1.1357-1.6488-2.4484-2.2519-3.7888-1.6479-3.6619-2.66781-8.4531-2.83264-13.668z" />
                       </g>
                     </svg>
-                    <span className="text-lg font-serif">Travel Planner</span>
+                    <span className="text-lg font-serif">Travel Buddy</span>
                   </div>
                   <button
                     onClick={() => setIsMobileMenuOpen(false)}
