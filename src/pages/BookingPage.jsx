@@ -682,7 +682,7 @@ export default function BookingPage() {
                 </div>
 
                 {/* Booking Form Card */}
-                <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
+                <div className="bg-card rounded-2xl border border-border shadow-sm">
                   <div className="p-6">
                     <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
                       <IconCalendar size={20} className="text-primary" />
