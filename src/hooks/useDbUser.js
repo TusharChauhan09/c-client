@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { useUser } from '@clerk/clerk-react';
-import axios from 'axios';
+import { useState, useEffect } from "react";
+import { useUser } from "@clerk/clerk-react";
+import axios from "axios";
 
 export function useDbUser() {
   const { user, isSignedIn } = useUser();
@@ -10,10 +10,13 @@ export function useDbUser() {
   useEffect(() => {
     const fetchUser = async () => {
       if (!isSignedIn || !user) return;
-      
+
       try {
         setLoading(true);
-        const response = await axios.get(`http://localhost:3000/api/auth/me?clerkId=${user.id}`);
+        const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+        const response = await axios.get(
+          `${API_URL}/api/auth/me?clerkId=${user.id}`
+        );
         if (response.data.success) {
           setDbUser(response.data.user);
         }

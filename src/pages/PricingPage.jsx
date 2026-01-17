@@ -113,19 +113,17 @@ export default function PricingPage() {
         return;
       }
 
-      const orderResponse = await fetch(
-        "http://localhost:3000/api/payment/create-order",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            amount: amount,
-            currency: "INR",
-          }),
-        }
-      );
+      const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+      const orderResponse = await fetch(`${API_URL}/api/payment/create-order`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          amount: amount,
+          currency: "INR",
+        }),
+      });
 
       if (!orderResponse.ok) {
         throw new Error(`HTTP error! status: ${orderResponse.status}`);
@@ -159,7 +157,9 @@ export default function PricingPage() {
         order_id: orderData.order.id,
         handler: async function (response) {
           const verifyResponse = await fetch(
-            "http://localhost:3000/api/payment/verify-payment",
+            `${
+              import.meta.env.VITE_API_URL || "http://localhost:3000"
+            }/api/payment/verify-payment`,
             {
               method: "POST",
               headers: {
